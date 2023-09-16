@@ -4,10 +4,17 @@ import Head from "next/head";
 import Image from "next/image";
 import styles from "../../styles/coffee-store.module.css";
 
-import coffeeStoresData from "../../data/coffee-stores.json";
+import cls from 'classnames'
 
-export function getStaticProps(staticProps) {
+import coffeeStoresData from "../../data/coffee-stores.json";
+import { fetchCoffeStores } from "../../lib/coffee-stores";
+
+export async function getStaticProps(staticProps) {
   const params = staticProps.params;
+
+  const coffeeStores = await fetchCoffeStores();
+
+  
 
   return {
     props: {
@@ -41,6 +48,10 @@ export const CoffeeStore = (props) => {
     return "Loading";
   }
 
+  const handleUpvoteButton = (e)=> {
+      console.log("handle upvote")
+  }
+
   const { name, address, neighbourhood, imgUrl } = props.coffeeStore;
   return (
     <div className={styles.layout}>
@@ -55,14 +66,26 @@ export const CoffeeStore = (props) => {
         </Link> 
         </div>
         <div className={styles.nameWrapper}>
-        <h1 className={styles.name}>{styles.name}</h1>
+        <h1 className={styles.name}>{name}</h1>
         </div>
       <Image src={imgUrl} width={600} height={360} className={styles.storeImg} alt={name}></Image>
         
       </div>
-      <div className={styles.col2}>
-        <p>{address}</p>
-        <p>{neighbourhood}</p>
+      <div className={cls("glass",styles.col2)}>
+        <div className={styles.iconWrapper}> 
+          <Image src="/icons/nearMe.svg" width={"24"} height={"24"}/>
+            <p className={styles.text}>{address}</p>
+        </div>
+        <div className={styles.iconWrapper}> 
+          <Image src="/icons/places.svg" width={"24"} height={"24"}/>
+            <p className={styles.text}>{neighbourhood}</p>
+        </div>
+        
+        <div className={styles.iconWrapper}> 
+          <Image src="/icons/star.svg" width={"24"} height={"24"}/>
+            <p className={styles.text}>{1}</p>
+        </div>
+        <button className={styles.upvoteButton} onClick={handleUpvoteButton}> up vote! </button>
       </div>
     </div> 
     </div>
